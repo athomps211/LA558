@@ -52,10 +52,17 @@ body {
     <button type="button" onclick="invite('You invited a monkey!','monkey.jpg')">Monkey</button>
 <br> 
 <br>
-<form action="/action_page.php">
-Suggest a name for dan's friend: <input type="text" Name="FirstName" value="type here">
-<input type="submit" value="Submit">
+<form>
+Suggest a name for Dan's friend:
+<br>
+First Name: <input type="text" id="fname" value="type here">
+<br>
+Last Name: <input type="text" id="lname" value="type here">
+<br><br>
+<button type="button" onclick="makename()">ok</button>
 </form>
+
+<p id="name"></p>
 
     
 <h2>What should they do?</h2>
@@ -75,10 +82,10 @@ Suggest a name for dan's friend: <input type="text" Name="FirstName" value="type
 <h2>Shopping List</h2>
     <p>To maintain this growth trajectory, Dan must eat a lot! Use the boxes below to assable a shopping list.</p>
 
-Chicken: <input type="checkbox" id="c" onclick=List('chicken') checked>
-Hamburger: <input type="checkbox" id="h" onclick=List('hamburger') checked>
-Carrot: <input type="checkbox" id="ca" onclick=List('carrot') checked>
-Cupcake: <input type="checkbox" id="cu" onclick=List('cupcake') checked>
+Chicken: <input type="checkbox" id="c" onclick=List('c','chicken') checked>
+Hamburger: <input type="checkbox" id="h" onclick=List('h','hamburger') checked>
+Carrot: <input type="checkbox" id="ca" onclick=List('ca','carrot') checked>
+Cupcake: <input type="checkbox" id="cu" onclick=List('cu','cupcake') checked>
 
 <p>shopping  list:</p>
 <ul>
@@ -86,38 +93,10 @@ Cupcake: <input type="checkbox" id="cu" onclick=List('cupcake') checked>
   <li id="hamburger">hamburger</li>
   <li id="carrot">carrot</li>
   <li id="cupcake">cupcake</li>
-
 </ul>
     
 <script>
-  if (c.checked) {
-    document.getElementById("chicken").style.display = "block";
-  } else {
-    document.getElementById("chicken").style.display = "none";
-  }
-  if (b.checked) {
-    document.getElementById("hamburger").style.display = "block";
-  } else {
-    document.getElementById("hamburger").style.display = "none";
-  }
-    if (b.checked) {
-    document.getElementById("carrot").style.display = "block";
-  } else {
-    document.getElementById("carrot").style.display = "none";
-  }
-    if (b.checked) {
-    document.getElementById("cupcake").style.display = "block";
-  } else {
-    document.getElementById("cupcake").style.display = "none";
-  }
-function List(item) {
-  if (document.getElementById(item).style.display === "none") {
-    document.getElementById(item).style.display = "block";
-  } else {
-    document.getElementById(item).style.display = "none";
-  }
-}
-    
+
 var Dan ={
     firstName: "Dan",
     lastName: "Dog",
@@ -136,6 +115,12 @@ function invite(text,photo) {
       document.getElementById("friends").innerHTML = text;
       document.getElementById("friend").src=photo;
     }
+    
+function makename() {
+  var friendsName = document.getElementById("fname").value+"&nbsp"+document.getElementById("lname").value
+  document.getElementById("name").innerHTML = "Dan looks forward to hanging out with " + friendsName;
+}
+    
 function fun(activity) {
   var message;
   var m = new Array(3);
@@ -157,9 +142,15 @@ function fun(activity) {
       message =m[n];
   }
   document.getElementById("fun").innerHTML = message;
-}
+}   
     
-
+function List(box,item){
+  if (document.getElementById(box).checked==true) {
+    document.getElementById(item).style.display = "block";
+  } else {
+    document.getElementById(item).style.display = "none";
+  }}
+    
 </script>
     
 </body>
