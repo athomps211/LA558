@@ -2,13 +2,34 @@
 <html>
 <head>
 <title>Assignment 1</title>
-    <script>
-
-    function myFunction() {
-      document.getElementById("cats").innerHTML = "Paragraph changed.";
+<style>
+    h1 {
+  color: cadetblue;
+  text-align: center;
+  font-size: 40px;
+  font-family: "Arial Verdana", sans-serif;}
+h2 {
+  color: cadetblue;
+  text-align: left;
+  font-size: 20px;
+  font-family: "Marker Felt", sans-serif;}
+p {
+  color: red
+  text-align: left;
+  font-size: 14px;
+  font-family: "Arial Verdana", sans-serif;}
+.center {
+  margin: auto;
+  width: 100%;
+  padding: 20px;
 }
-    </script>
+body {
+  background-color: lightyellow;
+  margin: 60px}
+</style>
+    
 </head>
+    
 <body>
 
 <a href="../index.html">Home</a>
@@ -16,12 +37,130 @@
 <p>by Anna Thompson</p>
 
     
-<p>Is Dan the Dog friends with cats or monkeys?</p>
-<button type="button" onclick="cats()">cats</button>
+<h2>Help Dan the Dog make friends by inviting someone to hang out with him.
+</h2>
+<section id="scene" class="center" align ="center">
+    <br>
+    <img id="dan" src="dandog.jpg">
+    <img id="friend" src="myst.png" height = 300>
+    <br>
+    <br>
+</section>
+    <p id="friends"> Choose below. </p>
 
-<p id="cats">A Paragraph.</p>
+    <button type="button" onclick="invite('You invited a cat!','cat.jpg')">Cat</button>
+    <button type="button" onclick="invite('You invited a monkey!','monkey.jpg')">Monkey</button>
+<br> 
+<br>
+<form action="/action_page.php">
+Suggest a name for dan's friend: <input type="text" Name="FirstName" value="type here">
+<input type="submit" value="Submit">
+</form>
 
-<button type="button" onclick="myFunction()">Try it</button>
+    
+<h2>What should they do?</h2>
+    <p id="fun">Choose below.</p>
+    
+    <button type="button" onclick="fun(0)">Hunt for fun smells at dawn</button>
+    <br>
+    <button type="button" onclick="fun(1)">Eat lunch at the compost pile</button>
+    <br>
+    <button type="button" onclick="fun(2)">Midnight mischief</button>
+    <br>
+    <button type="button" onclick="fun(3)">Choose randomly</button>
+
+<h2>Dan's projected growth:</h2>
+    <p id="growth"></p>
+
+<h2>Shopping List</h2>
+    <p>To maintain this growth trajectory, Dan must eat a lot! Use the boxes below to assable a shopping list.</p>
+
+Chicken: <input type="checkbox" id="c" onclick=List('chicken') checked>
+Hamburger: <input type="checkbox" id="h" onclick=List('hamburger') checked>
+Carrot: <input type="checkbox" id="ca" onclick=List('carrot') checked>
+Cupcake: <input type="checkbox" id="cu" onclick=List('cupcake') checked>
+
+<p>shopping  list:</p>
+<ul>
+  <li id="chicken">chicken</li>
+  <li id="hamburger">hamburger</li>
+  <li id="carrot">carrot</li>
+  <li id="cupcake">cupcake</li>
+
+</ul>
+    
+<script>
+  if (c.checked) {
+    document.getElementById("chicken").style.display = "block";
+  } else {
+    document.getElementById("chicken").style.display = "none";
+  }
+  if (b.checked) {
+    document.getElementById("hamburger").style.display = "block";
+  } else {
+    document.getElementById("hamburger").style.display = "none";
+  }
+    if (b.checked) {
+    document.getElementById("carrot").style.display = "block";
+  } else {
+    document.getElementById("carrot").style.display = "none";
+  }
+    if (b.checked) {
+    document.getElementById("cupcake").style.display = "block";
+  } else {
+    document.getElementById("cupcake").style.display = "none";
+  }
+function List(item) {
+  if (document.getElementById(item).style.display === "none") {
+    document.getElementById(item).style.display = "block";
+  } else {
+    document.getElementById(item).style.display = "none";
+  }
+}
+    
+var Dan ={
+    firstName: "Dan",
+    lastName: "Dog",
+    size: 300
+}
+document.getElementById("dan").height=Dan.size;
+    
+var text = "";
+var i;
+for (i = 1; i < 17; i++) {
+  text += "year " + i+ ": " +  [5+i*i*.5] + " lbs" + "<br>";
+}
+document.getElementById("growth").innerHTML = text;
+    
+function invite(text,photo) {
+      document.getElementById("friends").innerHTML = text;
+      document.getElementById("friend").src=photo;
+    }
+function fun(activity) {
+  var message;
+  var m = new Array(3);
+  	m[0] = "Mark the calendar for 3am for a smelly morning.";
+    m[1] = "Mark the calendar for noon to rustle up some lunch.";
+    m[2] = "Mark the calendar for 11:59 for some spooky adventures.";
+  if (activity == 0) {
+    message = m[activity];
+    document.getElementById("scene").style.backgroundImage = "linear-gradient(#ff9999, #ffffcc, #ffff99)";
+  } else if (activity == 1) {
+    message = m[activity];
+    document.getElementById("scene").style.backgroundImage = "linear-gradient(#ccf2ff, #336600)";
+  } else if (activity == 2) {
+    message = m[activity];
+    document.getElementById("scene").style.backgroundImage = "linear-gradient(#800080, black)";
+  } else {
+    var n = Math.floor(Math.random() * 3)
+      fun(n);
+      message =m[n];
+  }
+  document.getElementById("fun").innerHTML = message;
+}
+    
+
+</script>
     
 </body>
 </html>
