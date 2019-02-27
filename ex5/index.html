@@ -1,1 +1,144 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
 
+Copyright (c) 2019 by athomps211 (http://jsbin.com/gesekav/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+  <title>Exercise 5</title>
+	
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" /> <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+	
+<script src="https://code.jquery.com/jquery-3.0.0.js"></script>
+
+	
+<style id="jsbin-css">
+#map {
+     width: 500px;
+     height: 400px;
+     /* background-color: red; */
+}
+</style>
+</head>
+<body>
+    <a href="../index.html">Home</a>
+    <h1>Exercise 5</h1>
+<h2>Eugene, OR</h2>
+<div id='map'></div>
+	<br>
+  
+	Pan to <a href="javascript:home()">My house</a><br>
+	
+  <a href="#" id='zoomOut'>Zoom out to level 12</a><br>
+    
+  <a href="#" id='zoomOutOut'>Zoom out to level 7</a><br>
+
+  <button id="oba">Visit Oregon Ballet Academy</button>	<br>
+    
+  <button id="hillside">Visit Hillside Elementary</button>	<br>  
+  
+  <button id="rms">Visit Roosevelt Middle School</button>	<br>  
+  
+  <button id="south">Visit South Eugene High School</button>	<br>
+  
+  <button id="hayward">Visit Hayward Field</button>	<br>
+    
+<script id="jsbin-javascript">
+var map = L.map('map').setView([44.037772,-123.086686], 13);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+
+
+//Places to visit
+var towns = [
+	[44.3112, -124.1048, "Yachats, OR"],
+	[45.5122, -122.6587, "Portland, OR"],
+	[44.0582, -121.3153, "Bend, OR"]
+];
+
+//loop through the array and add a marker for each
+for (var i = 0; i < towns.length; i++) {
+	marker = new L.marker([towns[i][0],towns[i][1]])
+	.bindPopup(towns[i][2])
+	.addTo(map)
+  .openPopup();
+}
+
+
+//----------Links below the Map----------
+
+       L.marker([44.03556,-123.0941]).addTo(map)
+.bindPopup("Anna's house")
+            .openPopup();
+
+L.marker([44.035034, -123.107944]).addTo(map)
+.bindPopup("Hillside Elementary")
+//            .openPopup();
+
+L.marker([44.032781, -123.083205]).addTo(map)
+.bindPopup("Roosevelt Middle School")
+//            .openPopup();
+
+L.marker([44.037772,-123.086686]).addTo(map)
+.bindPopup("South Eugene High School")
+//            .openPopup();
+
+L.marker([44.041706,-123.090692]).addTo(map)
+.bindPopup("Oregon Ballet Academy")
+//            .openPopup();
+
+L.marker([44.042484,-123.070752]).addTo(map)
+.bindPopup("Hayward Field")
+//            .openPopup();
+
+//Pan to my house
+function home() {
+	map.panTo(new L.LatLng(44.03556,-123.0941));
+}
+
+//set Zoom 1
+$("#zoomOut").click(function(){
+	map.setZoom(12);
+});
+
+//set Zoom 2
+$("#zoomOutOut").click(function(){
+	map.setZoom(7);
+});
+
+//oba
+$("#oba").click(function(){
+	map.setView(new L.LatLng(44.041706, -123.090692), 18);
+});
+
+
+//hillside
+$("#hillside").click(function(){
+	map.setView(new L.LatLng(44.035034, -123.107944), 17);
+});
+
+//roosevelt
+$("#rms").click(function(){
+	map.setView(new L.LatLng(44.032781, -123.083205), 16);
+});
+
+//south
+$("#south").click(function(){
+	map.setView(new L.LatLng(44.037772, -123.086686), 16);
+});
+
+//hayward
+$("#hayward").click(function(){
+	map.setView(new L.LatLng(44.042484, -123.070752), 16);
+});
+</script>
+</body>
+</html>
