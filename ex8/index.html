@@ -1,1 +1,87 @@
+<!DOCTYPE html>
 
+<html>
+
+<head>
+    <title>Exercise 8</title>
+    <!--load jquery-->
+    <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+    <!--load leaflet js and css-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <!--load github page containing JSON data-->
+    <script src="https://github.com/athomps211/LA558/blob/master/ex8/cities.js"></script>
+
+    <style id="jsbin-css">
+        h1 {
+            color: white;
+            text-align: left;
+            font-size: 40px;
+            font-family: "Times", sans-serif;
+        }
+        
+        h2 {
+            color: white;
+            text-align: left;
+            font-size: 25px;
+            font-family: "Times", sans-serif;
+        }
+        
+        p {
+            color: white;
+            text-align: left;
+            font-size: 18px;
+            font-family: "Helvetica", sans-serif;
+        }
+        
+        #map {
+            height: 400px;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            background-color: black;
+            margin: 60px
+        }
+    </style>
+
+</head>
+
+<body>
+    <p><a href="../index.html">Home</a></p>
+    <h1>Exercise 7</h1>
+    <h2>Introduction</h2>
+    <p>This map is designed to display the ten most populous cities in the United States. The popups associated with each city display the population of each according to the 2010 census.</p>
+    <h2>Caveat</h2>
+    <p>I have been sick all week and already working on this for hours, so in the spirit of getting better I am going to prioritize sleep tonight. At this point, I don't think I can figure this all out in time anyway, so I will revisit it tomorrow. This is by far the toughest exercise yet!</p>
+    <div id="map"></div>
+    <br>
+    <h2>Troubleshooting</h2>
+
+    <p>The points are not showing up on the map because the variable defined in my extenal JSON data is not recognized. I tried to simplify as much as possible to mimc the wyomingLocations example, and watched the video very closely, but I cannot find the bug! This of course is very dissapointing because now it looks as if nothing is on my map..</p>
+    <p>My json code looks great in geojson.io where I made it, and I am able to validate it, so I assume the problem is in my code or the way I saved it on Github.</p>
+
+    <script id="jsbin-javascript">
+        console.clear();
+
+        var map = L.map('map').setView([40, -100], 3.5);
+        // add an OpenStreetMap tile layer
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: 'basemap from lecture example',
+            maxZoom: 18
+        }).addTo(map);
+
+        //add JSON data
+        $.each(JSON.parse(cities), function(idx, obj) {
+            var marker = L.marker([obj.coordinates], {
+                title: obj.name,
+                opacity: 0.9,
+                riseOnHover: true
+            }).addTo(map);
+            marker.bindPopup(obj.pop);
+        });
+    </script>
+</body>
+
+</html>
