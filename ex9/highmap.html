@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Ex 9 highmap</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.4/proj4.js"></script>
+    <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/countries/us/us-all-all.js"></script>
+    <style id="jsbin-css">
+        #container {
+            height: 680px;
+            min-width: 310px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .loading {
+            margin-top: 10em;
+            text-align: center;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="../index.html">Home</a>
+    <br>
+    <a href="../ex9/index.html">Ex 9</a>
+    <h1>Exercise 9: Highchart</h1>
+
+    <div id="container"></div>
+
+    <script id="jsbin-javascript">
+        // Initialize the chart
+        var chart = Highcharts.mapChart('container', {
+
+            title: {
+                text: 'Spring Break Travel Path'
+            },
+
+            legend: {
+                align: 'left',
+                layout: 'vertical',
+                floating: true
+            },
+
+            mapNavigation: {
+                enabled: true
+            },
+
+            tooltip: {
+                formatter: function() {
+                    return this.point.id + (
+                        this.point.lat ?
+                        '<br>Lat: ' + this.point.lat + ' Lon: ' + this.point.lon : ''
+                    );
+                }
+            },
+
+            plotOptions: {
+                series: {
+                    marker: {
+                        fillColor: '#FFFFFF',
+                        lineWidth: 2,
+                        lineColor: Highcharts.getOptions().colors[1]
+                    }
+                }
+            },
+
+            series: [{
+                mapData: Highcharts.maps['countries/us/us-all-all'],
+                name: 'Basemap',
+                borderColor: '#707070',
+                nullColor: 'rgba(200, 200, 200, 0.3)',
+                showInLegend: false
+            }, {
+                name: 'Separators',
+                type: 'mapline',
+                data: Highcharts.geojson(Highcharts.maps['countries/us/us-all-all'], 'mapline'),
+                color: '#707070',
+                showInLegend: false,
+                enableMouseTracking: false
+            }, {
+                // Specify cities using lat/lon
+                type: 'mappoint',
+                name: 'Cities',
+                dataLabels: {
+                    format: '{point.id}'
+                },
+                // Use id instead of name to allow for referencing points later using
+                // chart.get
+                data: [{
+                    id: 'Ames',
+                    lat: 42.0308,
+                    lon: -93.6319
+                }, {
+                    id: 'Minneapolis',
+                    lat: 44.8848,
+                    lon: -93.2223
+                }, {
+                    id: 'Austin',
+                    lat: 30.2672,
+                    lon: -97.7431
+                }, {
+                    id: 'Big Bend National Park',
+                    lat: 29.1275,
+                    lon: -103.2425,
+                    dataLabels: {
+                        align: 'left',
+                        x: 5,
+                        verticalAlign: 'middle',
+                    }
+                }]
+            }]
+        });
+
+        // Function to return an SVG path between two points, with an arc
+        function pointsToPath(from, to, invertArc) {
+            var arcPointX = (from.x + to.x) / (invertArc ? 2.0 : 1.0),
+                arcPointY = (from.y + to.y) / (invertArc ? 2.1 : 1.0);
+            return 'M' + from.x + ',' + from.y + 'Q' + arcPointX + ' ' + arcPointY +
+                ',' + to.x + ' ' + to.y;
+        }
+
+        var amesPoint = chart.get('Ames'),
+            mspPoint = chart.get('Minneapolis'),
+            ausPoint = chart.get('Austin'),
+            bbPoint = chart.get('Big Bend National Park');
+
+        // Add a series of lines for London
+        chart.addSeries({
+            name: 'Path of Travel',
+            showInLegend: true,
+            type: 'mapline',
+            lineWidth: 2,
+            color: Highcharts.getOptions().colors[3],
+            data: [{
+                id: 'Ames - Minneapolis',
+                path: pointsToPath(amesPoint, chart.get('Minneapolis'), true)
+            }]
+        });
+
+        chart.addSeries({
+            name: 'Leg 2',
+            showInLegend: false,
+            type: 'mapline',
+            lineWidth: 2,
+            color: Highcharts.getOptions().colors[3],
+            data: [{
+                id: 'Minneapolis - Austin',
+                path: pointsToPath(mspPoint, chart.get('Austin'), true)
+            }]
+        });
+
+        chart.addSeries({
+            name: 'Leg 3',
+            showInLegend: false,
+            type: 'mapline',
+            lineWidth: 2,
+            color: Highcharts.getOptions().colors[3],
+            data: [{
+                id: 'Austin to Big Bend National Park',
+                path: pointsToPath(ausPoint, chart.get('Big Bend National Park'), true)
+            }]
+        });
+    </script>
+</body>
+
+</html>
