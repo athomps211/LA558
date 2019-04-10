@@ -1,1 +1,408 @@
+<!DOCTYPE html>
+<html>
 
+<head>
+    <title>Assignment 3</title>
+    <meta name="description" content="A summary of volcanoes monitored by the Cascade Volcano Observatory" />
+  
+	<script src="https://code.jquery.com/jquery-2.2.4.js"></script>  	  
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" /> 
+   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+	  <script src="https://athomps211.github.io/LA558/assignment3/volcanoes.json"></script>	  
+  
+<!--External Awesome Marker CSS-->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  	<link rel="stylesheet" href="https://athomps211.github.io/LA558/classes/Leaflet.awesome-markers-2.0-develop//dist/leaflet.awesome-markers.css">
+	
+<!--External Awesome Marker JS-->	
+     <script src="https://athomps211.github.io/LA558/classes/Leaflet.awesome-markers-2.0-develop/dist/leaflet.awesome-markers.js"></script>
+<style>
+* {
+  box-sizing: border-box;
+}
+/* Style the body */
+body {
+  background-color: white;
+  margin: 10px
+}
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+/* Style the topnav links */
+.topnav a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-family: "Arial Verdana", sans-serif;
+}
+/* Change color on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+/* Create two unequal columns that float next to each other */
+.column {
+  float: left;
+  padding: 10px;
+}
+/* Left column */
+.column.side {
+  width: 520px;
+}
+/* Main column */
+.column.middle {
+  width: 600px;
+}
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+.footer {
+  background-color: #F1F1F1;
+  text-align: left;
+  padding: 10px;
+  font-size: 12px;
+  font-family: "Arial Verdana", sans-serif;
+}
+h1 {
+  color: black;
+  text-align: center;
+  font-size: 40px;
+  font-family: "Arial Verdana", sans-serif;}
+h2 {
+  color: black;
+  text-align: left;
+  font-size: 20px;
+  font-family: "Arial Verdana", sans-serif;}
+p {
+  color: black;
+  font-size: 18px;
+  font-family: "Arial Verdana", sans-serif;}  
+/* Map styles */ 
+#map { 
+  height: 800px; 
+  width: 500px; 
+  margin: 0; 
+  padding: 0; 
+}
+.legend {
+    line-height: 10px;
+    color: #555;
+}
+.legend i {
+    width: 18px;
+    height: 20px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.9;
+}
+.info {
+    padding: 6px 8px;
+    font: 10px/20px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    color: #777;
+}
+</style>
+</head>
+  
+<body>
+<div class="header">
+  <h1>Cascade Volcanoes</h1>
+  <p>Volcanoes monitored by the Cascade Volcano Observatory and the latest updates made to the volcanic threat assessment in 2018.</p>
+</div>
+
+<div class="topnav">
+  <a href="../index.html">Home</a>
+</div>
+
+<div class="row">
+  <div class="column side">
+    <h2>Volcanic Threat</h2>
+    <div id="map"></div>
+  </div>
+  
+  <div class="column middle">
+    <h2>Volcanic Hazards</h2>
+    <p>Volcanoes may threaten the United States with earthquakes, landslides, floods, tsunamies, volcanic gas, ash falls, and wildfires, etc. To manage the large number of volcanoes within the country, the responsibility has been divided between five regional observatiories. This page provides an introduction to the volcanoes monitored by the Cascades Volcano Observatory. Volcanic threat is scored using a detailed rubric of hazard and exposure factors based on volcano type, modern observations, and historical activity. </p>
+    
+    <br>
+    <h2>Mount St. Helens, 1980</h2>
+    <img id="debris" src="DEBRIS.png" style=height:300px;>
+      <br>
+    <img id="ash" src="ASH.png" style=height:190px;>
+    <img id="trees" src="TREES.png" style=height:190px;>
+    <p style="font-size: 10pt">These images of the destruction from Mount St. Helens were presented in the 2018 Volcanic Threat Assesment Update, courtesy of various USGS members.</p>
+      
+  </div>  
+</div>    
+<h2>A Closer Look</h2>
+<p>Elevation, compostion, and volcano type are variable. Colors summarize compositional differences, but you may hover for further detail.</p>
+<!--High chart-->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<!--end high chart html-->
+
+<div class="footer">
+Ewert, J.W., Diefenbach, A.K., and Ramsey, D.W., 2018, 2018 update to the U.S. Geological Survey national volcanic threat assessment: U.S. Geological Survey Scientific Investigations Report 2018–5140, 40 p., https://doi.org/10.3133/ sir20185140.
+    <br>
+    <br>
+volcanoes.usgs.gov
+</div>
+    
+<script>
+console.clear();
+
+//Base Layers
+var Esri_WorldPhysical = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
+	maxZoom: 8
+});
+var OpenTopoMap = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        maxZoom: 17,
+        attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+      });
+var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+// Overlays
+      var Stamen_TonerLines = L.tileLayer('http://{s}.tile.stamen.com/toner-lines/{z}/{x}/{y}.png', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 20
+      });
+var Hydda_RoadsAndLabels = L.tileLayer('https://{s}.tile.openstreetmap.se/hydda/roads_and_labels/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: 'Tiles courtesy of <a href="http://openstreetmap.se/" target="_blank">OpenStreetMap Sweden</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+});
+
+//MAP
+var map = L.map('map', {
+        center: new L.LatLng(44.2, -121.1),
+        zoom: 6,
+        layers: [Esri_WorldPhysical]
+      });
+    //disable zoom and pan
+    map.dragging.disable();
+    map.touchZoom.disable();
+    map.doubleClickZoom.disable();
+    map.scrollWheelZoom.disable();
+
+
+//LAYER Section
+//define base maps
+      var baseMaps = {
+        "Terrain": Esri_WorldPhysical,
+        "Aerial Imagery": Esri_WorldImagery,
+        "Topo": OpenTopoMap,
+      };
+//define overlays
+      var overlayMaps = {
+        "State outlines": Stamen_TonerLines,
+        "Cities": Hydda_RoadsAndLabels
+      };
+      L.control.layers(baseMaps, overlayMaps).addTo(map);
+//add volcano points from external GeoJSON data
+L.geoJson(volcanoes, {  
+//add points
+    pointToLayer: function (feature, latlng) {
+        return new L.marker(latlng, {
+            icon: L.AwesomeMarkers.icon({
+			icon: 'caret-up', 
+			prefix: 'fa', //from fonts awesome
+			markerColor: feature.properties.threatGroup,
+			iconColor: 'black',
+		})
+        });
+    },
+//on hover and click
+    onEachFeature: function (feature, layer) {
+        htmlText ="<strong>Volcanic threat score: </strong>"+ feature.properties.threatScore;
+        layer.bindPopup(htmlText);
+		layer.bindTooltip(feature.properties.name);
+    }
+}).addTo(map); 
+
+//LEGEND Section
+//define legend and position
+var legend = L.control({
+  position: 'bottomright'
+});
+//legend content
+legend.onAdd = function(map) {
+  var div = L.DomUtil.create('div', 'info legend'),
+    categories = ['red', 'orange', 'yellow', 'green'],
+    labels = ['Very high','High','Moderate','Low'];
+
+// loop through items and generate a label with a colored square for each
+  for (var i = 0; i < categories.length; i++) {
+    div.innerHTML +=
+      '<i style="background:' + categories[i] + ' "></i> ' +
+      labels[i] + (categories ? '' + '<br>' : '');
+  }
+  return div;
+};
+legend.addTo(map);
+
+//HIGH CHART Section
+// Create the chart
+Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Volcano Elevation'
+    },
+    subtitle: {
+        text: 'Data from USGS Volcano Hazards Program website.'
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Elevation (m)'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: false,
+                format: '{point.y:.1f}'
+            }
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{point.name}</span><br>',
+        pointFormat: '<span style="color:{point.color}"><b>{point.name}</b></span>: {point.Composition} {point.VolcanoType}<br/>'
+    },
+    series: [
+        {
+            name: "Info:",
+            colorByPoint: false,
+            data: [
+                {
+                    name: "Mount Rainier",
+                    y: 4392,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite to dacite",
+                    color: "grey"
+                }, 
+                {
+                    name: "Mount Shasta",
+                    y: 4317,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite dacite",
+                    color: "grey"
+                },
+                {
+                    name: "Mount Adams",
+                    y: 3742,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Basalt to andesite",
+                    color: "dark grey"
+                },
+                {
+                    name: "Mount Hood",
+                    y: 3426,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite to dacite",
+                    color: "grey"
+                },
+                {
+                    name: "Mount Baker",
+                    y: 3286,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite",
+                    color: "grey"
+                },
+                {
+                    name: "Glacier Peak",
+                    y: 3213,
+                    VolcanoType: "Stratovolcano",
+                    Composition: "Dacite",
+                    color: "grey"
+                },
+                {
+                    name: "Mount Jefferson",
+                    y: 3199,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite to dacite",
+                    color: "grey"
+                },
+                {
+                    name: "Lassen Peak",
+                    y: 3187,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Andesite and dacite",
+                    color: "grey"
+                },
+                {
+                    name: "Three Sisters",
+                    y: 3157,
+                    VolcanoType: "complex volcano",
+                    Composition: "Andesite to Rhyolite",
+                    color: "pink"
+                },
+                {
+                    name: "Mount St. Helens",
+                    y: 2539,
+                    VolcanoType: "stratovolcano",
+                    Composition: "Basalt to Rhyodacite",
+                    color: "tan"
+                },
+                {
+                    name: "Crater Lake",
+                    y: 2487,
+                    VolcanoType: "caldera",
+                    Composition: "Basalt to rhyolite",
+                    color: "tan"
+                },
+                {
+                    name: "Newberry",
+                    y: 2434,
+                    VolcanoType: "shield-shaped",
+                    Composition: "Basalt to rhyolite",
+                    color: "tan"
+                },
+                {
+                    name: "Medicine Lake",
+                    y: 2412,
+                    VolcanoType: "composite",
+                    Composition: "Basalt to rhyolite",
+                    color: "tan"
+                }
+            ]
+        }
+    ],
+});
+    
+</script>
+</body>
+  
+</html>
