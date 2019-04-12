@@ -4,15 +4,12 @@
 
 <head>
     <title>Exercise 8</title>
-    <!--load jquery-->
     <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
-    <!--load leaflet js and css-->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <!--load geoJSON data-->
-    <script src="https://github.com/athomps211/LA558/ex8/cities.json"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+    <script src="https://athomps211.github.io/LA558/ex8/cities.json"></script>
 
-    <style id="jsbin-css">
+    <style>
         h1 {
             color: white;
             text-align: left;
@@ -35,7 +32,7 @@
         }
         
         #map {
-            height: 400px;
+            height: 500px;
             margin: 0;
             padding: 0;
         }
@@ -44,6 +41,32 @@
             background-color: black;
             margin: 60px
         }
+        
+        .legend {
+            line-height: 10px;
+            color: #555;
+        }
+        
+        .legend i {
+            width: 18px;
+            height: 20px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.5;
+        }
+        
+        .info {
+            padding: 6px 8px;
+            font: 10px/20px Arial, Helvetica, sans-serif;
+            background: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+        }
+        
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
     </style>
 
 </head>
@@ -51,16 +74,10 @@
 <body>
     <p><a href="../index.html">Home</a></p>
     <h1>Exercise 8</h1>
-    <h2>Introduction</h2>
-    <p>This map is designed to display the ten most populous cities in the United States. The popups associated with each city display the population of each according to the 2010 census.</p>
-    <h2>Caveat</h2>
-    <p>I have been sick all week and already working on this for hours, so in the spirit of getting better I am going to prioritize sleep tonight. At this point, I don't think I can figure this all out in time anyway, so I will revisit it tomorrow. This is by far the toughest exercise yet!</p>
+    <h2>Top 10 largest US cities</h2>
+    <p>Data from Wikipedia</p>
     <div id="map"></div>
     <br>
-    <h2>Troubleshooting</h2>
-
-    <p>The points are not showing up on the map because the variable defined in my extenal JSON data is not recognized. I tried to simplify as much as possible to mimc the wyomingLocations example, and watched the video very closely, but I cannot find the bug! This of course is very dissapointing because now it looks as if nothing is on my map..</p>
-    <p>My json code looks great in geojson.io where I made it, and I am able to validate it, so I assume the problem is in my code or the way I saved it on Github.</p>
 
     <script>
         console.clear();
@@ -73,14 +90,47 @@
         }).addTo(map);
 
         //add JSON data
-        $.each(JSON.parse(cities), function(idx, obj) {
-            var marker = L.marker([obj.coordinates], {
-                title: obj.name,
-                opacity: 0.9,
-                riseOnHover: true
-            }).addTo(map);
-            marker.bindPopup(obj.pop);
+
+        // add geoJSON points and format with attributes
+        L.geoJson(cities, {
+            pointToLayer: function(feature, latlng) {
+                return new L.CircleMarker(latlng, {
+                    stroke: true,
+                    weight: 2, //stroke weight
+                    color: 'red', //stroke color
+                    opacity: 1.0, //stroke opacity
+                    fillOpacity: 0.5,
+                    radius: parseFloat(feature.properties.pop.replace(/,/g, '')) * .000002,
+                });
+            },
+            //on hover and click
+            onEachFeature: function(feature, layer) {
+                htmlText = "<strong>Population: </strong>" + feature.properties.pop;
+                layer.bindPopup(htmlText);
+                layer.bindTooltip(feature.properties.name);
+            }
+        }).addTo(map);
+
+        //LEGEND Section
+        //define legend and position
+        var legend = L.control({
+            position: 'bottomright'
         });
+        //legend content
+        legend.onAdd = function(map) {
+            var div = L.DomUtil.create('div', 'info legend'),
+                categories = ['red'],
+                labels = ['cities'];
+
+            // loop through items and generate a label with a colored square for each
+            for (var i = 0; i < categories.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + categories[i] + ' "></i> ' +
+                    labels[i] + (categories ? '' + '<br>' : '');
+            }
+            return div;
+        };
+        legend.addTo(map);
     </script>
 </body>
 
