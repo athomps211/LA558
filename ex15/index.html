@@ -1,1 +1,302 @@
+<!DOCTYPE html>
+<!--
+Created using JS Bin
+http://jsbin.com
 
+Copyright (c) 2019 by anonymous (http://jsbin.com/qayekuyake/1/edit)
+
+Released under the MIT license: http://jsbin.mit-license.org
+-->
+<meta name="robots" content="noindex">
+<html>
+<head>
+<meta name="description" content="LA 458/558 26b Turf.JS Examples 2018">
+	
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>LA 458/558 Turf JS Examples</title>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+	
+	<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+	
+	
+<script src="https://code.jquery.com/jquery-2.0.3.js"></script>
+	
+<script src="https://npmcdn.com/@turf/turf@3.5.1/turf.min.js"></script>	
+	
+<script>
+    var bbox = turf.bbox(features);
+</script>
+	
+	
+	
+
+	
+</head>
+<body>
+    <a href="../index.html">Home</a>
+	<h1>Exercise 15</h1>		 
+	<div id="mapid" style="width: 600px; height: 400px;"></div>	 
+    <h2>Tools and functions</h2>
+    <p>#1 along: When planning a marathon, determine where in town you need to place water stations if they need to be spaced as one per mile.</p>
+    <p>#2 destination: you are locating a point where you had a nice picnic last summer, but because it was not in town, you recorded its position in distance and degrees from two reference mountains.</p>
+    <p>#3 midpoint: your best friend lives far away, and you would like to see each other as soon as possible. Calculate your midpoint to minimize both travel times.</p>
+    <p>#4 GreatCircle: you would like to know what you saw out of the airplane window last week, so you use the GreatCircle tool to approximate your flight path and see what you flew over.</p>
+    <p>#5 lineIntersect: you want to know if you run the risk of running into your enemy while walking to class, so you analyze both your routes to find every possible place your paths could intersect.</p>
+			 
+
+<script id="jsbin-javascript">
+console.clear();
+//note that http://icons.webtoolhub.com/icon-p4s2023-set.aspx  used for the green icon source.
+
+//JSON of the line
+var myLine = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            -93.6226987838745,
+            42.02682200832815
+          ],
+          [
+            -93.62707614898682,
+            42.026790129450546
+          ],
+          [
+            -93.63106727600098,
+            42.02860719996226
+          ],
+          [
+            -93.63364219665527,
+            42.02765085353554
+          ],
+          [
+            -93.64158153533936,
+            42.030487972630844
+          ],
+          [
+            -93.64145278930663,
+            42.02892597890733
+          ],
+          [
+            -93.64325523376465,
+            42.02892597890733
+          ]
+          //#1 changed points for line to match my bus route
+        ]
+      }
+    }
+  ]
+};
+
+
+//JSON of the Polygon
+var myPolygon = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -93.64675283432007,
+              42.029061459474924
+            ],
+            [
+              -93.64586234092712,
+              42.029061459474924
+            ],
+            [
+              -93.64586234092712,
+              42.029547593252374
+            ],
+            [
+              -93.64675283432007,
+              42.029547593252374
+            ],
+            [
+              -93.64675283432007,
+              42.029061459474924
+            ]
+            //#2 changed polygon intercepts to match my place of work
+          ]
+        ]
+      }
+    }
+  ]
+};
+
+
+
+//Calculate the length of the polyline in miles
+var length = turf.lineDistance(myLine, 'miles');
+console.log("myLine = "+ length + " miles");
+
+
+
+//calculates the area of the mPolygon in sq meters and sq miles
+var area = turf.area(myPolygon);
+	console.log(area + " sq meters");
+	console.log(area * 0.000000386102158542 + " sq miles");
+	
+
+//The green marker point on the map
+var myPoint = {
+  "type": "Feature",
+  "properties": {
+    "marker-color": "#0f0"
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-93.6,42.00]  //change to 42.05 to cover blue marker and the closest white circle will change
+  }
+};
+
+
+//these are the three white circle markers
+var myPointCollection = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+		  id: 1
+	  },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.62200140953064,
+          42.025602629870654]
+      }//#3 changed coordinates to show where I shop
+    }, {
+      "type": "Feature",
+      "properties": {
+		  		  id: 2
+	  },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.61969470977783,
+          42.02014303433601]
+      }//#4 changed coordinates to show the second place I shop
+    },{
+      "type": "Feature",
+      "properties": {
+		  		  id: 3
+	  },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [-93.61114919185638,
+          42.01723770079914]
+      }//#5 changed coordinates to show the third place I shop
+    }
+  ]
+};
+
+
+
+
+//This calculation is geodesic distance of the white circle that is closest to the green marker.
+var nearest = turf.nearest(myPoint, myPointCollection);
+
+var nearestID = nearest.properties.id;
+
+console.log(nearest.properties.id);
+
+
+
+
+
+
+
+
+
+	
+
+
+//*****************
+var mapCenter = L.latLng(42.025,-93.627);
+
+	
+var map = L.map('mapid').setView(mapCenter, 14);
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+		maxZoom: 18,
+		attribution: ''
+	}).addTo(map);
+
+//var mapCenterMarker = L.marker(mapCenter).addTo(map);
+
+var myStyle = {
+    "color": "green",
+    "weight": 3,
+    "opacity": 0.65
+};
+//#6 removed center marker
+
+var myPointIcon = L.icon({
+		iconUrl: 'https://profseeger.github.io/LA558/images/chartreuseMapMarker.png',
+		iconSize: [32, 32],
+		iconAnchor: [16, 32],
+		//popupAnchor: [0, -28]
+	});
+
+startPoint =  L.geoJSON(myPoint, {
+		pointToLayer: function (feature, latlng) {
+			return L.marker(latlng, {icon: myPointIcon});
+		},
+		//onEachFeature: onEachFeature
+	}).addTo(map);
+
+
+L.geoJSON(myLine, {
+    style: myStyle
+}).addTo(map);
+
+
+L.geoJSON(myPolygon, {
+    style: myStyle
+}).addTo(map);
+
+
+//if the ID of the item identified as being the nearest matches d, then change color of item to orange.
+function getColor(d) {
+    return d == nearestID ? 'orange' :
+                'white';
+}
+
+var geojsonMarkerOptions = {
+    radius: 7,
+    //fillColor: "white",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+
+L.geoJSON(myPointCollection, {
+    pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+    },
+	style: function(feature) {
+	console.log(feature.properties.id);//note this is how you access contents of the id within L.geoJson
+		return {
+					//radius: some property from geojson,
+					fillColor: getColor(feature.properties.id)
+				};
+			},
+			onEachFeature: function (feature, layer) {
+				layer.bindPopup("ID: "+feature.properties.id);
+			}
+	
+}).addTo(map);
+
+</script>
+</body>
+</html>
