@@ -19,6 +19,9 @@
       margin: 0; 
       padding: 0; 
     }  
+    body{
+      margin: 20px
+    }
     </style>   <!--map--> 
     <style>
 ul {
@@ -212,6 +215,10 @@ li.dropdown {
             return L.circleMarker(latlng, act);
         },
         onEachFeature: function(feature, layer) {
+            //Box contents
+            photoURL = "photos/"+ feature.properties.photo+".jpg";
+            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'height='200'><br>"
+            layer.bindPopup(htmlText);
             //hover
             layer.bindTooltip(feature.properties.title);
         }

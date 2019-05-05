@@ -54,6 +54,16 @@ li.dropdown {
   display: block;
 }
 </style>   <!--nav bar--> 
+<style>
+      #map {
+        height: 400px;
+      }
+    body{
+        margin: 20px
+    }
+</style>   <!--map--> 
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
 </head>
 <body>
 <h1>Geologic Fieldwork</h1>
@@ -75,6 +85,40 @@ li.dropdown {
           <a href="nz.html">New Zealand mapping projects</a>
         </div>
     </ul>      <!--nav bar--> 
+<h2>Keck Geology Consortium, Iceland, 2016-2017</h2>
+<p>During my senior year at Carleton College, I had the great opportunity to participate in a Keck Geology Consortium project, which is designed to provide research experiences to undergraduate students from the 18 participating colleges and universities. I joined a project lead by Megan Pollock and Ben Edwards that involved two weeks of fieldwork in Iceland, two weeks of labwork at Wooster College, presenting posters at the GSA national fall meeting, completing a thesis in the following year, and finally presenting our final work at the Keck Symposium at Wesleyan University.</p>
+<p>Studied vesicle distribution in subglacial pillow basalt. My research for Keck was incorporated my research into my senior thesis at Carleton College. My summer fieldwork in Iceland was followed by petrology and geochemistry lab work at the College of Wooster. I used Adobe Illustrator and ImageJ extensively for data processing and preparing figures. </p>
+<div id="map"></div>
+    <br>
+<embed src="keckdoc.pdf" width="100%" height="600px" />
+    <a href="keckdoc.pdf">Open document in a new window</a>
+    <br>
+    <br>
+<img src="photos/iceland.jpg" style="width:49%">                        
+<img src="photos/pillows.jpg" style="width:49%;">
+<img src="photos/moss.jpg" style="width:49%;">
+<img src="photos/tents.jpg" style="width:49%;">
+<img src="photos/columns.jpg" style="width:49%;">
+<img src="photos/tuya.jpg" style="width:49%;">
+<script>
+      //Base Layers
+      var Esri_WorldImagery = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+});
+      //the map
+      var map = L.map('map', {
+        center: new L.LatLng(64.55998287916448,-21.658000946044922),
+        zoom: 7,
+        layers: [Esri_WorldImagery]
+      });
+      
+      
+L.marker([64.5516397783742,-21.66628360748291],{
+	title: "Undirhlíðar Quarry",
+	opacity: 1
+}).addTo(map)
+  .bindTooltip("Undirhlíðar Quarry");
+    </script>      <!--map--> 
 </body>
 </html>
 
