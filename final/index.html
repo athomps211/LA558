@@ -168,7 +168,8 @@ li.dropdown {
         onEachFeature: function(feature, layer) {
             //Box contents
             photoURL = "photos/"+ feature.properties.photo+".jpg";
-            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description;
+            linkURL = "https://athomps211.github.io/LA558/final/"+feature.properties.url;
+            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description+"<br>"+"<a href=linkURL>details</a>";
             layer.bindPopup(htmlText);
             //hover
             layer.bindTooltip(feature.properties.title);
