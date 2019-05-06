@@ -9,7 +9,8 @@
       padding: 0;
     }
     body{
-      margin: 20px
+      margin: 20px;
+      font-family: "Avant Garde", sans-serif;
     }
     div.a {
       transform: rotate(180deg);
@@ -134,7 +135,7 @@ li.dropdown {
         layers: [Esri_WorldImagery, Stamen_TonerLines]
       });
     
-//ADD mapping POINTS
+//ADD forefield POINTS
     L.geoJSON(forefields, {
         pointToLayer: function(feature, latlng) {
           var act = {
@@ -143,7 +144,7 @@ li.dropdown {
         color: "#000",
         weight: 1,
         opacity: 1,
-        fillOpacity: 0.8
+        fillOpacity: 1
     };
             return L.circleMarker(latlng, act);
         },
