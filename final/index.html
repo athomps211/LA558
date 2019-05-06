@@ -168,8 +168,11 @@ li.dropdown {
         onEachFeature: function(feature, layer) {
             //Box contents
             photoURL = "photos/"+ feature.properties.photo+".jpg";
-            linkURL = "https://athomps211.github.io/LA558/final/"+feature.properties.url;
-            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description+"<br>"+"<a href=linkURL>details</a>";
+            linkURL = feature.properties.url;
+            htmlText1 = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description
+            htmlText2 = htmlText1+"<br>"+"<a href="+linkURL+">details</a>";
+            if(feature.properties.link=="no") htmlText =htmlText1;
+            if(feature.properties.link=="yes") htmlText =htmlText2;
             layer.bindPopup(htmlText);
             //hover
             layer.bindTooltip(feature.properties.title);
@@ -215,7 +218,7 @@ li.dropdown {
         onEachFeature: function(feature, layer) {
             //Box contents
             photoURL = "photos/"+ feature.properties.photo+".jpg";
-            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description;
+            htmlText = "<strong>" + feature.properties.title + "</strong><br>" + feature.properties.caption + "<img src='" + photoURL + "'width='270'><br>" + feature.properties.description+"<br>"+"<a href="+feature.properties.url+">details</a>";
             layer.bindPopup(htmlText);
             //hover
             layer.bindTooltip(feature.properties.title);
